@@ -11,6 +11,8 @@ import androidx.core.app.NotificationCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
+//channel
+
 class BatteryChannelHandler(private val context: Context) {
 
     private val channel = "asnprz/battery"

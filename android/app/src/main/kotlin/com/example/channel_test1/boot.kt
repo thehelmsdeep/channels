@@ -5,21 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-
-
-class BootReceiver : BroadcastReceiver() {
-
-
-    private val tag = "BootReceiver"
-
-    override fun onReceive(context: Context, intent: Intent) {
-        Log.d(tag, "BootReceiver received broadcast: ${intent.action}")
-
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED){
-            Log.d(tag, "Device Boot Completed")
+class BootCompletedReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
+            Log.d("booot", "Boot completed detected.")
+            val launchIntent = Intent(context, MainActivity::class.java)
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context?.startActivity(launchIntent)
         }
-
     }
-
-
 }
