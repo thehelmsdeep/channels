@@ -4,6 +4,7 @@ import 'package:channel_test1/channels/boot.dart';
 import 'package:channel_test1/channels/network_access.dart';
 import 'package:channel_test1/channels/restart.dart';
 import 'package:channel_test1/channels/time.dart';
+import 'package:channel_test1/channels/volume.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -23,7 +24,7 @@ class App extends StatelessWidget {
         animationDuration: Duration(milliseconds: 400),
         position: ToastPosition.bottom,
         duration: Duration(seconds: 3),
-        child: MaterialApp(home: Airplane()));
+        child: MaterialApp(home: VolumeControlScreen()));
   }
 }
 

@@ -13,12 +13,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-
-
+import android.content.Context
+import android.media.AudioManager
+import android.util.Log
+import io.flutter.plugin.common.MethodChannel
 
 
 class MainActivity : FlutterActivity() {
     private val REQUEST_OVERLAY_PERMISSION = 1
+
+
+    private val methodChannelName = "volume_control_channel"
+    private val audioManager by lazy { getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +73,20 @@ class MainActivity : FlutterActivity() {
         // airplane
         airplaneModeChannelHandler = AirplaneModeChannelHandler(this)
         airplaneModeChannelHandler.setupEventChannel(flutterEngine)
+        // volume
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, methodChannelName).setMethodCallHandler { call, result ->
+            Log.d("volume", ">>>>>  $result")
+            when (call.method) {
+                "getMaxVolume" -> result.success(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC))
+                "getCurrentVolume" -> result.success(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
+                "setVolume" -> {
+                    val volumeLevel = call.arguments as Int
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeLevel, 0)
+                    result.success(null)
+                }
+                else -> result.notImplemented()
+            }
+        }
 
     }
 
