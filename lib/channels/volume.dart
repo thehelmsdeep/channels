@@ -1,28 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
-
 class VolumeControlScreen extends StatefulWidget {
   @override
   _VolumeControlScreenState createState() => _VolumeControlScreenState();
 }
 
 class _VolumeControlScreenState extends State<VolumeControlScreen> {
-  static const platform = MethodChannel('volume_control_channel');
-  int _maxVolume = 0;
+  static const MethodChannel _volumeMethodChannel = MethodChannel('volume_control_channel');
+  static const EventChannel _volumeEventChannel = EventChannel('volume_event_channel');
   int _currentVolume = 0;
+  int _maxVolume = 0;
 
   @override
   void initState() {
     super.initState();
-    _initVolume();
+
+    // Get initial volume values
+    _initializeVolume();
+
+    // Listen for volume updates
+    _volumeEventChannel.receiveBroadcastStream().listen((volume) {
+      setState(() {
+        _currentVolume = volume;
+      });
+    });
   }
 
-  Future<void> _initVolume() async {
+  Future<void> _initializeVolume() async {
     try {
-      final int maxVolume = await platform.invokeMethod('getMaxVolume');
-      final int currentVolume = await platform.invokeMethod('getCurrentVolume');
+      final int maxVolume = await _volumeMethodChannel.invokeMethod('getMaxVolume');
+      final int currentVolume = await _volumeMethodChannel.invokeMethod('getCurrentVolume');
+
       setState(() {
         _maxVolume = maxVolume;
         _currentVolume = currentVolume;
@@ -32,47 +41,48 @@ class _VolumeControlScreenState extends State<VolumeControlScreen> {
     }
   }
 
-  Future<void> _setVolume(int volumeLevel) async {
+  Future<void> _setVolume(int volume) async {
+    if (volume < 0 || volume > _maxVolume) return; // Ensure volume within bounds
     try {
-      await platform.invokeMethod('setVolume', volumeLevel);
-      setState(() {
-        _currentVolume = volumeLevel;
-      });
+      await _volumeMethodChannel.invokeMethod('setVolume', volume);
     } on PlatformException catch (e) {
       print("Failed to set volume: '${e.message}'.");
+    }
+  }
+
+  void _increaseVolume() {
+    if (_currentVolume < _maxVolume) {
+      _setVolume(_currentVolume + 1);
+    }
+  }
+
+  void _decreaseVolume() {
+    if (_currentVolume > 0) {
+      _setVolume(_currentVolume - 1);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Volume Control'),
-      ),
+      appBar: AppBar(title: Text("Volume Control")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Max Volume: $_maxVolume'),
-            SizedBox(height: 20),
-            Text('Current Volume: $_currentVolume'),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (_currentVolume > 0) {
-                  _setVolume(_currentVolume - 1);
-                }
-              },
-              child: Text('Decrease Volume'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (_currentVolume < _maxVolume) {
-                  _setVolume(_currentVolume + 1);
-                }
-              },
-              child: Text('Increase Volume'),
+            Text('Current Volume: $_currentVolume / $_maxVolume'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.remove),
+                  onPressed: _decreaseVolume,
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: _increaseVolume,
+                ),
+              ],
             ),
           ],
         ),
