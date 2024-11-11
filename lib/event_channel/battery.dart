@@ -15,7 +15,6 @@ class _BatteryLevelScreenState extends State<BatteryLevelScreen> {
   void initState() {
     super.initState();
 
-    // Listen to battery level updates from Android
     _batteryEventChannel.receiveBroadcastStream().listen(
           (batteryLevel) {
         setState(() {

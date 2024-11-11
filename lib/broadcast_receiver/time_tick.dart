@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  static const platform = MethodChannel('com.example.your_project/time');
+  static const platform = MethodChannel('channels/time');
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +32,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    // Listen for MethodChannel call from Android
     MyApp.platform.setMethodCallHandler((call) async {
       if (call.method == "onTimeTick") {
-        // Handle the received data
         final eventData = Map<String, dynamic>.from(call.arguments);
         setState(() {
           _message = "Event: ${eventData['event']}\nTime: ${eventData['currentTime']}\nStatus: ${eventData['status']}";
@@ -48,12 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flutter TimeTick Example"),
+        title: const Text("Flutter TimeTick Example"),
       ),
       body: Center(
         child: Text(
           _message,
-          style: TextStyle(fontSize: 24),
+          style: const TextStyle(fontSize: 24),
         ),
       ),
     );

@@ -1,4 +1,4 @@
-package com.example.channel_test1
+package com.example.channel_test1.event_channel
 
 
 
@@ -14,8 +14,8 @@ import io.flutter.plugin.common.MethodChannel
 
 class VolumeControlManager(private val context: Context, flutterEngine: FlutterEngine) {
 
-    private val methodChannelName = "volume_control_channel"
-    private val eventChannelName = "volume_event_channel"
+    private val methodChannelName = "channels/volume_control_channel"
+    private val eventChannelName = "channels/volume_event_channel"
     private val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
     private var volumeObserver: ContentObserver? = null
@@ -35,13 +35,10 @@ class VolumeControlManager(private val context: Context, flutterEngine: FlutterE
             }
         }
 
-        // Set up EventChannel for listening to volume changes
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, eventChannelName).setStreamHandler(object : EventChannel.StreamHandler {
             override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-                // Send initial volume
                 events?.success(streamVolume)
 
-                // Set up ContentObserver to track volume changes
                 volumeObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
                     override fun onChange(selfChange: Boolean) {
                         val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
@@ -59,7 +56,6 @@ class VolumeControlManager(private val context: Context, flutterEngine: FlutterE
             }
 
             override fun onCancel(arguments: Any?) {
-                // Unregister the ContentObserver to stop listening
                 if (volumeObserver != null) {
                     context.contentResolver.unregisterContentObserver(volumeObserver as ContentObserver)
                     volumeObserver = null

@@ -7,8 +7,8 @@ class VolumeControlScreen extends StatefulWidget {
 }
 
 class _VolumeControlScreenState extends State<VolumeControlScreen> {
-  static const MethodChannel _volumeMethodChannel = MethodChannel('volume_control_channel');
-  static const EventChannel _volumeEventChannel = EventChannel('volume_event_channel');
+  static const MethodChannel _volumeMethodChannel = MethodChannel('channels/volume_control_channel');
+  static const EventChannel _volumeEventChannel = EventChannel('channels/volume_event_channel');
   int _currentVolume = 0;
   int _maxVolume = 0;
 
@@ -16,10 +16,8 @@ class _VolumeControlScreenState extends State<VolumeControlScreen> {
   void initState() {
     super.initState();
 
-    // Get initial volume values
     _initializeVolume();
 
-    // Listen for volume updates
     _volumeEventChannel.receiveBroadcastStream().listen((volume) {
       setState(() {
         _currentVolume = volume;
@@ -42,7 +40,7 @@ class _VolumeControlScreenState extends State<VolumeControlScreen> {
   }
 
   Future<void> _setVolume(int volume) async {
-    if (volume < 0 || volume > _maxVolume) return; // Ensure volume within bounds
+    if (volume < 0 || volume > _maxVolume) return;
     try {
       await _volumeMethodChannel.invokeMethod('setVolume', volume);
     } on PlatformException catch (e) {

@@ -30,7 +30,6 @@ class _ContactScreenState extends State<ContactScreen> {
     _requestPermissions();
   }
 
-  // Request permission for contacts
   Future<void> _requestPermissions() async {
     PermissionStatus status = await Permission.contacts.request();
     if (status.isGranted) {
@@ -40,7 +39,6 @@ class _ContactScreenState extends State<ContactScreen> {
     }
   }
 
-  // Fetch contacts from ContactService
   Future<void> _getContacts() async {
     final List<Map<String, String>> fetchedContacts = await _contactService.getContacts();
     setState(() {
