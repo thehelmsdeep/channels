@@ -1,9 +1,4 @@
-import 'package:channel_test1/channels/airplane.dart';
-import 'package:channel_test1/channels/battery.dart';
-import 'package:channel_test1/channels/boot.dart';
-import 'package:channel_test1/channels/network_access.dart';
-import 'package:channel_test1/channels/restart.dart';
-import 'package:channel_test1/channels/time.dart';
+
 import 'package:channel_test1/channels/volume.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
