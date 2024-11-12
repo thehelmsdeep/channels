@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+void main() {
+  runApp(MyApp());
+}
 
-void main()=>runApp(MaterialApp(home: BatteryLevelScreen()));
-
-
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: BatteryLevelScreen(),
+    );
+  }
+}
 
 class BatteryLevelScreen extends StatefulWidget {
   @override
@@ -12,22 +20,20 @@ class BatteryLevelScreen extends StatefulWidget {
 }
 
 class _BatteryLevelScreenState extends State<BatteryLevelScreen> {
-  static const EventChannel _batteryEventChannel =
-      EventChannel('channels/battery');
-  int _batteryLevel = 0;
+  static const batteryChannel = EventChannel('battery_channel');
+  int _batteryLevel = -1;
 
   @override
   void initState() {
     super.initState();
-
-    _batteryEventChannel.receiveBroadcastStream().listen(
-      (batteryLevel) {
+    batteryChannel.receiveBroadcastStream().listen(
+          (event) {
         setState(() {
-          _batteryLevel = batteryLevel;
+          _batteryLevel = event as int;
         });
       },
       onError: (error) {
-        print("Error receiving battery level: $error");
+        print("Error: $error");
       },
     );
   }
@@ -37,10 +43,9 @@ class _BatteryLevelScreenState extends State<BatteryLevelScreen> {
     return Scaffold(
       appBar: AppBar(title: Text("Battery Level")),
       body: Center(
-        child: Text(
-          'Battery Level: $_batteryLevel%',
-          style: TextStyle(fontSize: 24),
-        ),
+        child: _batteryLevel == -1
+            ? CircularProgressIndicator()
+            : Text("Battery Level: $_batteryLevel%"),
       ),
     );
   }

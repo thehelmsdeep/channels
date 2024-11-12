@@ -31,9 +31,7 @@ class MainActivity : FlutterActivity() {
 //--------------------------------------------------------------------------------event channels
         VolumeControlManager(this, flutterEngine)
 
-        val batteryEventHandler = BatteryEventHandler(this)
-        val batteryEventChannel = EventChannel(flutterEngine.dartExecutor.binaryMessenger, "channels/battery")
-        batteryEventHandler.setUpEventChannel(batteryEventChannel)
+        BatteryEventHandler(this, flutterEngine)
 
 
 //--------------------------------------------------------------------------------content providers
@@ -45,7 +43,6 @@ class MainActivity : FlutterActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
     }
 
 
