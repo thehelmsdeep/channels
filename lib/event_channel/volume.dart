@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+void main()=>runApp(MaterialApp(home: VolumeControlScreen()));
+
+
+
 class VolumeControlScreen extends StatefulWidget {
   @override
   _VolumeControlScreenState createState() => _VolumeControlScreenState();
 }
 
 class _VolumeControlScreenState extends State<VolumeControlScreen> {
+
   static const MethodChannel _volumeMethodChannel = MethodChannel('channels/volume_control_channel');
   static const EventChannel _volumeEventChannel = EventChannel('channels/volume_event_channel');
   int _currentVolume = 0;
