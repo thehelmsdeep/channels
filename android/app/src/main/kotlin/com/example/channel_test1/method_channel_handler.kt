@@ -1,33 +1,38 @@
 package com.example.channel_test1
 
-
-
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 
-class MethodChannelHandler(private val channel: MethodChannel) : MethodCallHandler {
+class MethodChannelHandler(private val flutterEngine: FlutterEngine) {
 
-    // Map to store dynamically added methods and their corresponding actions
-    private val methodHandlers = mutableMapOf<String, (MethodCall, Result) -> Unit>()
+    private val channels = mutableMapOf<String, MethodChannel>()
 
-    init {
-        channel.setMethodCallHandler(this)
+    fun registerChannel(channelName: String, handler: (MethodCall, MethodChannel.Result) -> Unit) {
+        if (channels.containsKey(channelName)) {
+            channels[channelName]?.setMethodCallHandler(null)
+        }
+
+        val methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
+        methodChannel.setMethodCallHandler { call, result ->
+            handler(call, result)
+        }
+
+        channels[channelName] = methodChannel
     }
 
-    override fun onMethodCall(call: MethodCall, result: Result) {
-        // Look up the method name in the map and execute it if found
-        methodHandlers[call.method]?.invoke(call, result) ?: result.notImplemented()
+    fun unregisterChannel(channelName: String) {
+        channels[channelName]?.setMethodCallHandler(null)
+        channels.remove(channelName)
     }
 
-    // Function to add a new method handler
-    fun registerMethod(methodName: String, handler: (MethodCall, Result) -> Unit) {
-        methodHandlers[methodName] = handler
+    fun dispose() {
+        channels.values.forEach { it.setMethodCallHandler(null) }
+        channels.clear()
     }
 
-    // Function to remove a method handler
-    fun unregisterMethod(methodName: String) {
-        methodHandlers.remove(methodName)
+    // Method to send events to Flutter from a specific channel
+    fun sendEvent(channelName: String, method: String, arguments: Any?) {
+        channels[channelName]?.invokeMethod(method, arguments)
     }
 }

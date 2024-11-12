@@ -1,20 +1,41 @@
 package com.example.channel_test1.broadcast_receiver
 
 
+
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
-import io.flutter.plugin.common.MethodChannel
+import com.example.channel_test1.MethodChannelHandler
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TimeTickService(private val context: Context, private val channel: MethodChannel) {
+class TimeTickService(
+    private val context: Context,
+    private val channelHandler: MethodChannelHandler,
+    private val channelName: String
+) {
 
     private lateinit var timeTickReceiver: BroadcastReceiver
 
     fun setup() {
+        channelHandler.registerChannel(channelName) { call, result ->
+            when (call.method) {
+                "startListening" -> {
+                    setupTimeTickReceiver()
+                    result.success("TimeTickService started")
+                }
+                "stopListening" -> {
+                    tearDown()
+                    result.success("TimeTickService stopped")
+                }
+                else -> result.notImplemented()
+            }
+        }
+    }
+
+    private fun setupTimeTickReceiver() {
         timeTickReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.action == Intent.ACTION_TIME_TICK) {
@@ -27,7 +48,9 @@ class TimeTickService(private val context: Context, private val channel: MethodC
                     )
 
                     Log.d("TimeTickService", "Sending event details: $eventDetails")
-                    channel.invokeMethod("onTimeTick", eventDetails)
+
+                    // Send the event to Flutter via the dynamic channel handler
+                    channelHandler.sendEvent(channelName, "onTimeTick", eventDetails)
                 }
             }
         }

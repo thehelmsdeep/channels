@@ -14,12 +14,9 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
 
 
-
     private lateinit var timeTickService: TimeTickService
-
+    private lateinit var channelHandler: MethodChannelHandler
     private lateinit var contactService: ContactService
-
-
 
 
 
@@ -29,15 +26,8 @@ class MainActivity : FlutterActivity() {
 
 //broadcast receivers
 
-        val methodChannel = MethodChannel(flutterEngine.dartExecutor, "channels/time")
-
-        val methodChannelHandler = MethodChannelHandler(methodChannel)
-
-        methodChannelHandler.registerMethod("getTimeTick") { call, result ->
-            result.success("TIME_TICK Broadcast ready!")
-        }
-
-        timeTickService = TimeTickService(this, methodChannel)
+        channelHandler = MethodChannelHandler(flutterEngine)
+        timeTickService = TimeTickService(this, channelHandler,"channels/time_tick_channel")
         timeTickService.setup()
 
 
