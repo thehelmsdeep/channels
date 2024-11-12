@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+
+void main()=>runApp(MaterialApp(home: BatteryLevelScreen()));
+
+
+
 class BatteryLevelScreen extends StatefulWidget {
   @override
   _BatteryLevelScreenState createState() => _BatteryLevelScreenState();
@@ -8,7 +13,7 @@ class BatteryLevelScreen extends StatefulWidget {
 
 class _BatteryLevelScreenState extends State<BatteryLevelScreen> {
   static const EventChannel _batteryEventChannel =
-  EventChannel('battery_event_channel');
+      EventChannel('channels/battery');
   int _batteryLevel = 0;
 
   @override
@@ -16,7 +21,7 @@ class _BatteryLevelScreenState extends State<BatteryLevelScreen> {
     super.initState();
 
     _batteryEventChannel.receiveBroadcastStream().listen(
-          (batteryLevel) {
+      (batteryLevel) {
         setState(() {
           _batteryLevel = batteryLevel;
         });

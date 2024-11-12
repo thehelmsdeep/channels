@@ -1,4 +1,4 @@
-import 'package:channel_test1/content_provider/contact/service.dart';
+import 'package:channel_test1/methos_channel/content_provider/contact/service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 

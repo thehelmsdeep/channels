@@ -12,8 +12,8 @@ class VolumeControlScreen extends StatefulWidget {
 
 class _VolumeControlScreenState extends State<VolumeControlScreen> {
 
-  static const MethodChannel _volumeMethodChannel = MethodChannel('channels/volume_control_channel');
-  static const EventChannel _volumeEventChannel = EventChannel('channels/volume_event_channel');
+  static const MethodChannel _volumeMethodChannel = MethodChannel('channels/method/volume');
+  static const EventChannel _volumeEventChannel = EventChannel('channels/event/volume');
   int _currentVolume = 0;
   int _maxVolume = 0;
 

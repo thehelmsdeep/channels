@@ -1,4 +1,4 @@
-package com.example.channel_test1.content_provider.contacts
+package com.example.channel_test1.method_channels.content_resolver
 
 
 

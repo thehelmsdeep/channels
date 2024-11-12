@@ -1,4 +1,4 @@
-package com.example.channel_test1
+package com.example.channel_test1.method_channels
 
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel

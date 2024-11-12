@@ -1,11 +1,10 @@
-package com.example.channel_test1.event_channel
+package com.example.channel_test1.event_channels
 
 import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -16,7 +15,7 @@ class VolumeControlManager(context: Context, flutterEngine: FlutterEngine) {
     private var currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
     init {
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "channels/volume_control_channel").setMethodCallHandler { call, result ->
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "channels/method/volume").setMethodCallHandler { call, result ->
             when (call.method) {
                 "getMaxVolume" -> result.success(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC))
                 "getCurrentVolume" -> result.success(currentVolume)
@@ -25,11 +24,10 @@ class VolumeControlManager(context: Context, flutterEngine: FlutterEngine) {
             }
         }
 
-        EventChannel(flutterEngine.dartExecutor.binaryMessenger, "channels/volume_event_channel").setStreamHandler(object : EventChannel.StreamHandler {
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, "channels/event/volume").setStreamHandler(object : EventChannel.StreamHandler {
             private var events: EventChannel.EventSink? = null
             private val volumeObserver = object : android.database.ContentObserver(Handler(Looper.getMainLooper())) {
                 override fun onChange(selfChange: Boolean) {
-                    println(">>>>>>>>>>>>>>>> changed")
                     val newVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
                     if (newVolume != currentVolume) { currentVolume = newVolume; events?.success(currentVolume) }
                 }
