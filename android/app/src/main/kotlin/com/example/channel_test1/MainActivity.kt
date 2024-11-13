@@ -38,21 +38,7 @@ class MainActivity : FlutterActivity() {
 
 
 
-    // Check if the accessibility service is enabled
-    private fun isAccessibilityServiceEnabled(context: Context, service: String): Boolean {
-        val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-        val enabledServices = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
-        val colonSplitter = TextUtils.SimpleStringSplitter(':')
-        colonSplitter.setString(enabledServices)
 
-        while (colonSplitter.hasNext()) {
-            val componentName = colonSplitter.next()
-            if (componentName.equals(service, ignoreCase = true)) {
-                return true
-            }
-        }
-        return false
-    }
 
     // Redirect the user to the accessibility settings
     private fun openAccessibilitySettings(context: Context) {
@@ -83,13 +69,13 @@ class MainActivity : FlutterActivity() {
 
         permissionHandler = PermissionHandler(this)
 
-//        permissionHandler.requestPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE) { isGranted ->
-//            if (isGranted) {
-//                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(this, "Camera permission is required to use this feature", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        permissionHandler.requestPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE) { isGranted ->
+            if (isGranted) {
+                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Camera permission is required to use this feature", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 
         showAccessibilityServiceDialog(this)
