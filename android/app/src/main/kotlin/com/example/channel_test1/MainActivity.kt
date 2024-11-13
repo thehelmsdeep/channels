@@ -1,26 +1,52 @@
 package com.example.channel_test1
 
 
+import android.widget.Toast
 import com.example.channel_test.event_channel.BatteryEventHandler
 import com.example.channel_test1.event_channels.VolumeControlManager
 import com.example.channel_test1.method_channels.DeviceInfoChannel
-import com.example.channel_test1.method_channels.content_resolver.ContactService
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.EventChannel
+import android.Manifest
+import com.example.channel_test1.method_channels.content_providers.ContactServicee
 
 
 class MainActivity : FlutterActivity() {
 
 
 
-    private lateinit var contactService: ContactService
+    private lateinit var permissionHandler: PermissionHandler
+    private val CAMERA_PERMISSION_CODE = 100
+    private lateinit var contactService: ContactServicee
+
+
+
+
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionHandler.onRequestPermissionsResult(requestCode, grantResults)
+    }
 
 
 
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+
+        permissionHandler = PermissionHandler(this)
+
+        permissionHandler.requestPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE) { isGranted ->
+            if (isGranted) {
+                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Camera permission is required to use this feature", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
 
 
 //--------------------------------------------------------------------------------method channels
@@ -35,7 +61,7 @@ class MainActivity : FlutterActivity() {
 
 
 //--------------------------------------------------------------------------------content providers
-        contactService = ContactService(contentResolver)
+        contactService = ContactServicee(contentResolver)
         contactService.setup(flutterEngine)
 
     }
@@ -44,6 +70,9 @@ class MainActivity : FlutterActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
+
+
 
 
 }

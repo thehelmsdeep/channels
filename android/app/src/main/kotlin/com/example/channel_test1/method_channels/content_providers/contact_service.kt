@@ -1,4 +1,4 @@
-package com.example.channel_test1.method_channels.content_resolver
+package com.example.channel_test1.method_channels.content_providers
 
 
 
@@ -8,7 +8,7 @@ import android.provider.ContactsContract
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.embedding.engine.FlutterEngine
 
-class ContactService(private val contentResolver: ContentResolver) {
+class ContactServicee(private val contentResolver: ContentResolver) {
 
     fun getContacts(): List<Map<String, String>> {
         val contacts = mutableListOf<Map<String, String>>()
