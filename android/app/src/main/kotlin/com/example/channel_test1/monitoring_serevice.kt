@@ -1,5 +1,6 @@
 package com.example.channel_test1
 
+
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityEvent
@@ -49,7 +50,7 @@ class AppMonitorService : AccessibilityService() {
 
         val notification: Notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("Phone App Opened")
-            .setContentText("You opened the Phone app   :)")
+            .setContentText("You opened the Phone app :)")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
